@@ -15,15 +15,17 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 
-public class TypeChecker {
-	static Double normMulti1 = 1.0, flyMulti1 = 1.0, fightMulti1 = 1.0, fireMulti1 = 1.0, waterMulti1 = 1.0,
-        elecMulti1 = 1.0, grassMulti1 = 1.0, bugMulti1 = 1.0, poisMulti1 = 1.0, darkMulti1 = 1.0,
-        psyMulti1 = 1.0, ghostMulti1 = 1.0, groundMulti1 = 1.0, rockMulti1 = 1.0, steelMulti1 = 1.0,
-        iceMulti1 = 1.0, dragMulti1 = 1.0, faeMulti1 = 1.0;
+public class PokemonTypeChecker {
+	static Double normMulti1 = 1.0, flyMulti1 = 1.0, fightMulti1 = 1.0, fireMulti1 = 1.0,
+		waterMulti1 = 1.0, elecMulti1 = 1.0, grassMulti1 = 1.0, bugMulti1 = 1.0,
+		poisMulti1 = 1.0, darkMulti1 = 1.0, psyMulti1 = 1.0, ghostMulti1 = 1.0,
+		groundMulti1 = 1.0, rockMulti1 = 1.0, steelMulti1 = 1.0, iceMulti1 = 1.0,
+		dragMulti1 = 1.0, faeMulti1 = 1.0;
 
-    static String[] elements = {"Normal", "Flying", "Fighting", "Fire", "Water", "Electric",
-      	"Grass", "Bug", "Poison", "Dark", "Psychic", "Ghost",
+    static String[] elements = {"Normal", "Flying", "Fighting", "Fire", "Water",
+    	"Electric", "Grass", "Bug", "Poison", "Dark", "Psychic", "Ghost",
        	"Ground", "Rock", "Steel", "Ice", "Dragon", "Fairy"};
+
     static int len = elements.length;
     static Double[] multiplierList1 = new Double[len];
 
@@ -57,10 +59,9 @@ public class TypeChecker {
      		@Override
      		public void itemStateChanged(ItemEvent e) {
      			if (e.getStateChange() == ItemEvent.SELECTED) {
-     				for (int i = 0; i < len; i++) {
-       					multiplierList1[i] = 1.0;
-       					multiplierDisplay();
-       				}
+     				multiplierReset();
+       				multiplierDisplay();
+
      			 	for (int i = 0; i < len; i++) {
      			 		if (e.getItem() == types[i]) {
      			 			switch(elements[i]) {
@@ -196,9 +197,15 @@ public class TypeChecker {
 	    multiplierList1[17] = faeMulti1;
     }
 
+    public static void multiplierReset() {
+    	for (int i = 0; i < len; i++) {
+    		multiplierList1[i] = 1.0;
+    	}
+    }
+
     public static void multiplierDisplay() {
     	StringBuilder vln = new StringBuilder(), resist = new StringBuilder(),
-    		imm = new StringBuilder();
+    		imm = new StringBuilder();;
 
     	for (int i = 0; i < len; i++) {
     		if (multiplierList1[i] == 0.0) {
