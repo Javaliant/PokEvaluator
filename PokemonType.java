@@ -7,17 +7,20 @@ import java.util.HashMap;
 public class PokemonType {
     String name;
     HashMap<Element, Double> multipliers = new HashMap<Element, Double>();
+    Element element;
 
     PokemonType(Builder p) {
-        name = p.name; multipliers = p.multipliers;
+        name = p.name; multipliers = p.multipliers; element = p.element;
     }
 
     static class Builder {
         final String name;
         HashMap<Element, Double> multipliers = new HashMap<Element, Double>();
+        Element element;
 
         public Builder(Element element) {
         	this.name = element.name;
+            this.element = element;
         	// Default values
             for (Element e : Element.values()) {
                 multipliers.put(e, 1.0);
