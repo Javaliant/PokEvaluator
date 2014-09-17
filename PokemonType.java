@@ -19,7 +19,7 @@ public class PokemonType {
         Element element;
 
         public Builder(Element element) {
-        	this.name = element.name;
+        	this.name = element.toString();
             this.element = element;
         	// Default values
             for (Element e : Element.values()) {
@@ -40,9 +40,8 @@ public class PokemonType {
             return this;
         }
         public PokemonType generate() { return new PokemonType(this); }
-    } // End of Builder
-
-    public HashMap<Element, Double> getMultipliers() {
-    	return this.multipliers;
     }
-} // End of PokemonType
+    public HashMap<Element, Double> getMultipliers() {
+        return this.multipliers;
+    }
+}
