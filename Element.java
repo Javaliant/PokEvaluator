@@ -5,30 +5,35 @@ import javax.swing.ImageIcon;
  */
 
 public enum Element {
-    NONE("None", new ImageIcon("Images/None.gif")),
-    NORMAL("Normal",new ImageIcon("Images/Normal.gif")),
-    FIRE("Fire", new ImageIcon("Images/Fire.gif")),
-    WATER("Water", new ImageIcon("Images/Water.gif")),
-    ELECTRIC("Electric", new ImageIcon("Images/Electric.gif")),
-    GRASS("Grass", new ImageIcon("Images/Grass.gif")),
-    BUG("Bug", new ImageIcon("Images/Bug.gif")),
-    POISON("Poison", new ImageIcon("Images/Poison.gif")),
-    ICE("Ice", new ImageIcon("Images/Ice.gif")),
-    DRAGON("Dragon", new ImageIcon("Images/Dragon.gif")),
-    FAIRY("Fairy", new ImageIcon("Images/Fairy.gif")),
-    STEEL("Steel", new ImageIcon("Images/Steel.gif")),
-    ROCK("Rock", new ImageIcon("Images/Rock.gif")),
-    GROUND("Ground", new ImageIcon("Images/Ground.gif")),
-    FIGHTING("Fighting", new ImageIcon("Images/Fighting.gif")),
-    FLYING("Flying", new ImageIcon("Images/Flying.gif")),
-    PSYCHIC("Psychic", new ImageIcon("Images/Psychic.gif")),
-    DARK("Dark", new ImageIcon("Images/Dark.gif")),
-    GHOST("Ghost", new ImageIcon("Images/Ghost.gif"));
+    NONE(new ImageIcon("Images/None.gif")),
+    NORMAL(new ImageIcon("Images/Normal.gif")),
+    FIRE(new ImageIcon("Images/Fire.gif")),
+    WATER(new ImageIcon("Images/Water.gif")),
+    ELECTRIC(new ImageIcon("Images/Electric.gif")),
+    GRASS(new ImageIcon("Images/Grass.gif")),
+    BUG(new ImageIcon("Images/Bug.gif")),
+    POISON(new ImageIcon("Images/Poison.gif")),
+    ICE(new ImageIcon("Images/Ice.gif")),
+    DRAGON(new ImageIcon("Images/Dragon.gif")),
+    FAIRY(new ImageIcon("Images/Fairy.gif")),
+    STEEL(new ImageIcon("Images/Steel.gif")),
+    ROCK(new ImageIcon("Images/Rock.gif")),
+    GROUND(new ImageIcon("Images/Ground.gif")),
+    FIGHTING(new ImageIcon("Images/Fighting.gif")),
+    FLYING(new ImageIcon("Images/Flying.gif")),
+    PSYCHIC(new ImageIcon("Images/Psychic.gif")),
+    DARK(new ImageIcon("Images/Dark.gif")),
+    GHOST(new ImageIcon("Images/Ghost.gif"));
 
     public final ImageIcon icon;
-    public final String name;
 
-    Element(String name, ImageIcon icon) {
-        this.name = name; this.icon = icon;
+    Element(ImageIcon icon) {
+        this.icon = icon;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString().substring(0, 1).toUpperCase() + 
+            super.toString().substring(1).toLowerCase();
     }
 }
