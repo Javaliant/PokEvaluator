@@ -138,11 +138,12 @@ public class PokemonTypeChecker {
 
         JComboBox<ImageIcon> typeList = new JComboBox<ImageIcon>();
         JComboBox<ImageIcon> typeList2 = new JComboBox<ImageIcon>();
-        JComboBox<String> auxillaryType = new JComboBox<String>();
+        
+        /*JComboBox<String> auxillaryType = new JComboBox<String>();
 
         auxillaryType.addItem("Auxillary Mod");
         auxillaryType.addItem("Forest's Curse");
-        auxillaryType.addItem("Trick or Treat");
+        auxillaryType.addItem("Trick or Treat");*/
 
         for (Element e : Element.values()) {
             typeList.addItem(e.icon);
@@ -165,7 +166,7 @@ public class PokemonTypeChecker {
 
         selectionPanel.add(typeList);
         selectionPanel.add(typeList2);
-        selectionPanel.add(auxillaryType);
+        //selectionPanel.add(auxillaryType);
 
         frame.add(result, BorderLayout.CENTER);
         frame.add(selectionPanel, BorderLayout.SOUTH);
@@ -192,13 +193,13 @@ public class PokemonTypeChecker {
                 if (entry.getKey() == entry2.getKey()) {
 
                     if (entry.getValue() * entry2.getValue() == 0.0) {
-                        immuneBuilder.append(entry.getKey().name).append(", ");
+                        immuneBuilder.append(entry.getKey().toString()).append(", ");
                     }
                     else if (entry.getValue() * entry2.getValue()  <= 0.5 ) {
-                        resistBuilder.append(entry.getKey().name).append(", ");
+                        resistBuilder.append(entry.getKey().toString()).append(", ");
                     }
                     else if (entry.getValue() * entry2.getValue()  >= 2.0) {
-                        vulnerableBuilder.append(entry.getKey().name).append(", ");
+                        vulnerableBuilder.append(entry.getKey().toString()).append(", ");
                     }
                 }
             }
