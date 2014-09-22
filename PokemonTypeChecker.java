@@ -3,14 +3,15 @@ Created on 9/8/2014
  */
 
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -117,33 +118,46 @@ public class PokemonTypeChecker {
             fighting, flying, fire, water, electric, grass, bug, poison, steel, ground,
             rock, ice, dragon, fairy, psychic, dark, ghost, none));
 
-    static JTextField immunities = new JTextField(15),
-            resistances = new JTextField(15), vulnerabilities = new JTextField(15);
+    static JPanel immunities = new JPanel(), resistances = new JPanel(),
+            vulnerabilities = new JPanel(), majorVulnerabilities = new JPanel(),
+            majorResistances = new JPanel();
+
+
+    static JFrame frame = new JFrame("Pokevaluator");
+    static JPanel selectionPanel = new JPanel(), result = new JPanel(), widener = new JPanel();
+
+    static JLabel immunityLabel = new JLabel("Immunity to:"),
+            resistanceLabel = new JLabel("Resistance to:"),
+            vulnerabilityLabel = new JLabel("Vulnerability to:"),
+            majorVulnLabel = new JLabel("Extreme Vulnerability to:"),
+            majorResistLabel = new JLabel("Strong resistance to:");
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("Pokemon Type Checker");
-        JPanel selectionPanel = new JPanel(), result = new JPanel();
-        result.setLayout(new GridLayout(3, 2, 0, 2));
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        immunities.setEditable(false);
-        resistances.setEditable(false);
-        vulnerabilities.setEditable(false);
+        widener.setPreferredSize(new Dimension(208, 0));
+        result.setLayout(new GridLayout());
 
-        result.add(new JLabel("Immune to:"));
-        result.add(immunities);
-        result.add(new JLabel("Resistant to:"));
-        result.add(resistances);
-        result.add(new JLabel("Vulnerable to:"));
-        result.add(vulnerabilities);
+        immunityLabel.setToolTipText("No damage will be taken");
+        resistanceLabel.setToolTipText("These will only inflict half damage");
+        vulnerabilityLabel.setToolTipText("Damage will be doubled from these sources");
+        majorResistLabel.setToolTipText("These will only do a fourth of the damage");
+        majorVulnLabel.setToolTipText("These will inflict four times the damage!");
 
         JComboBox<ImageIcon> typeList = new JComboBox<ImageIcon>();
         JComboBox<ImageIcon> typeList2 = new JComboBox<ImageIcon>();
-        
-        /*JComboBox<String> auxillaryType = new JComboBox<String>();
 
-        auxillaryType.addItem("Auxillary Mod");
-        auxillaryType.addItem("Forest's Curse");
-        auxillaryType.addItem("Trick or Treat");*/
+        JLabel helpMessage = new JLabel("To begin: set the pokemon's type below");
+        result.add(helpMessage, SwingConstants.CENTER);
 
         for (Element e : Element.values()) {
             typeList.addItem(e.icon);
@@ -153,7 +167,6 @@ public class PokemonTypeChecker {
         typeList.setSelectedItem(Element.NORMAL.icon);
 
         ItemListener typeListener = e -> {
-            PokemonType primaryPokemonType = normal, secondaryPokemonType = none;
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 displayAttributes(getPokemonType((ImageIcon)typeList.getSelectedItem()),
                         getPokemonType((ImageIcon)typeList2.getSelectedItem())
@@ -166,8 +179,8 @@ public class PokemonTypeChecker {
 
         selectionPanel.add(typeList);
         selectionPanel.add(typeList2);
-        //selectionPanel.add(auxillaryType);
 
+        frame.add(widener, BorderLayout.NORTH);
         frame.add(result, BorderLayout.CENTER);
         frame.add(selectionPanel, BorderLayout.SOUTH);
         frame.setIconImage(new ImageIcon("Images/Icon.png").getImage());
@@ -180,38 +193,59 @@ public class PokemonTypeChecker {
 
     public static void displayAttributes(PokemonType primary, PokemonType secondary) {
         if (primary == secondary) { secondary = none; }
-
-        immunities.setText("");
-        vulnerabilities.setText("");
-        resistances.setText("");
-        StringBuilder immuneBuilder = new StringBuilder(""),
-                vulnerableBuilder = new StringBuilder(""),
-                resistBuilder = new StringBuilder("");
+        result.setLayout(new GridLayout(0, 2, 0, 2));
+        result.removeAll();
+        immunities.removeAll();
+        vulnerabilities.removeAll();
+        majorVulnerabilities.removeAll();
+        majorResistances.removeAll();
+        resistances.removeAll();
 
         for(Map.Entry<Element, Double> entry : primary.getMultipliers().entrySet()){
             for(Map.Entry<Element, Double> entry2 : secondary.getMultipliers().entrySet()) {
                 if (entry.getKey() == entry2.getKey()) {
-
                     if (entry.getValue() * entry2.getValue() == 0.0) {
-                        immuneBuilder.append(entry.getKey().toString()).append(", ");
+                        immunities.add(new JLabel(entry.getKey().icon));
                     }
-                    else if (entry.getValue() * entry2.getValue()  <= 0.5 ) {
-                        resistBuilder.append(entry.getKey().toString()).append(", ");
+                    else if (entry.getValue() * entry2.getValue()  == 0.5 ) {
+                        resistances.add(new JLabel(entry.getKey().icon));
                     }
-                    else if (entry.getValue() * entry2.getValue()  >= 2.0) {
-                        vulnerableBuilder.append(entry.getKey().toString()).append(", ");
+                    else if (entry.getValue() * entry2.getValue()  == 2.0) {
+                        vulnerabilities.add(new JLabel(entry.getKey().icon));
+                    }
+                    else if (entry.getValue() * entry2.getValue()  == 4.0) {
+                       majorVulnerabilities.add(new JLabel(entry.getKey().icon));
+                    }
+                    else if (entry.getValue() * entry2.getValue()  == 0.25) {
+                        majorResistances.add(new JLabel(entry.getKey().icon));
                     }
                 }
             }
         }
 
-        finalizeBuilder(immuneBuilder);
-        finalizeBuilder(resistBuilder);
-        finalizeBuilder(vulnerableBuilder);
-
-        immunities.setText(immuneBuilder.toString());
-        vulnerabilities.setText(vulnerableBuilder.toString());
-        resistances.setText(resistBuilder.toString());
+        if (immunities.getComponents().length > 0) {
+            result.add(immunityLabel);
+            result.add(immunities);
+       }
+        if (majorResistances.getComponents().length > 0) {
+            result.add(majorResistLabel);
+            result.add(majorResistances);
+        }
+        if (resistances.getComponents().length > 0) {
+            result.add(resistanceLabel);
+            result.add(resistances);
+        }
+        if (vulnerabilities.getComponents().length > 0) {
+            result.add(vulnerabilityLabel);
+            result.add(vulnerabilities);
+        }
+        if (majorVulnerabilities.getComponents().length > 0) {
+            result.add(majorVulnLabel);
+            result.add(majorVulnerabilities);
+        }
+        frame.pack();
+        frame.revalidate();
+        frame.repaint();
     }
 
     public static PokemonType getPokemonType(ImageIcon icon) {
@@ -221,14 +255,5 @@ public class PokemonTypeChecker {
             }
         }
         return none; // should never be the case
-    }
-
-    public static StringBuilder finalizeBuilder(StringBuilder sb) {
-        if (sb.length() == 0) { sb.append("None."); }
-        else {
-            sb.setLength(sb.length() - 2);
-            sb.append('.');
-        }
-        return sb;
     }
 }
