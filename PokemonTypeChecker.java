@@ -12,6 +12,7 @@ import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -147,29 +148,56 @@ public class PokemonTypeChecker {
         widener.setPreferredSize(new Dimension(208, 0));
         result.setLayout(new GridLayout());
 
+        immunities.setLayout(new GridLayout(0, 5, 2, 2));
+        resistances.setLayout(new GridLayout(0, 5, 2, 2));
+        vulnerabilities.setLayout(new GridLayout(0, 5, 2, 2));
+        majorVulnerabilities.setLayout(new GridLayout(0, 5, 2, 2));
+        majorResistances.setLayout(new GridLayout(0, 5, 2, 2));
+
         immunityLabel.setToolTipText("No damage will be taken");
         resistanceLabel.setToolTipText("These will only inflict half damage");
         vulnerabilityLabel.setToolTipText("Damage will be doubled from these sources");
         majorResistLabel.setToolTipText("These will only do a fourth of the damage");
         majorVulnLabel.setToolTipText("These will inflict four times the damage!");
 
-        JComboBox<ImageIcon> typeList = new JComboBox<ImageIcon>();
-        JComboBox<ImageIcon> typeList2 = new JComboBox<ImageIcon>();
+        JComboBox<String> typeList = new JComboBox<>();
+        JComboBox<String> typeList2 = new JComboBox<>();
+        JComboBox<String> pokemonList = new JComboBox<>();
 
-        JLabel helpMessage = new JLabel("To begin: set the pokemon's type below");
+
+        JLabel helpMessage = new JLabel("To begin: Search a pokemon or set type below");
         result.add(helpMessage, SwingConstants.CENTER);
 
         for (Element e : Element.values()) {
-            typeList.addItem(e.icon);
-            typeList2.addItem(e.icon);
+            typeList.addItem(e.toString());
+            typeList2.addItem(e.toString());
         }
 
-        typeList.setSelectedItem(Element.NORMAL.icon);
+        for (Pokemon p : Pokemon.values()) {
+            pokemonList.addItem(p.toString());
+        }
+
+        AutoCompletion.enable(pokemonList);
+
+        ItemListener pokemonListener = e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                typeList.setSelectedItem(getPokemon((String) pokemonList.getSelectedItem()).primaryType.toString());
+                typeList2.setSelectedItem(getPokemon((String)pokemonList.getSelectedItem()).secondaryType.toString());
+            }
+        };
+
+        pokemonList.addItemListener(pokemonListener);
+
+        Font font = new Font("Comic Sans MS", Font.BOLD, 12);
+        typeList.setFont(font);
+        typeList2.setFont(font);
+        pokemonList.setFont(font);
+        typeList.setSelectedItem(Element.NORMAL.toString());
 
         ItemListener typeListener = e -> {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                displayAttributes(getPokemonType((ImageIcon)typeList.getSelectedItem()),
-                        getPokemonType((ImageIcon)typeList2.getSelectedItem())
+                displayAttributes(getPokemonType((String)typeList.getSelectedItem()),
+                        getPokemonType((String)typeList2.getSelectedItem())
                 );
             }
         };
@@ -177,6 +205,7 @@ public class PokemonTypeChecker {
         typeList.addItemListener(typeListener);
         typeList2.addItemListener(typeListener);
 
+        selectionPanel.add(pokemonList);
         selectionPanel.add(typeList);
         selectionPanel.add(typeList2);
 
@@ -214,7 +243,7 @@ public class PokemonTypeChecker {
                         vulnerabilities.add(new JLabel(entry.getKey().icon));
                     }
                     else if (entry.getValue() * entry2.getValue()  == 4.0) {
-                       majorVulnerabilities.add(new JLabel(entry.getKey().icon));
+                        majorVulnerabilities.add(new JLabel(entry.getKey().icon));
                     }
                     else if (entry.getValue() * entry2.getValue()  == 0.25) {
                         majorResistances.add(new JLabel(entry.getKey().icon));
@@ -226,7 +255,7 @@ public class PokemonTypeChecker {
         if (immunities.getComponents().length > 0) {
             result.add(immunityLabel);
             result.add(immunities);
-       }
+        }
         if (majorResistances.getComponents().length > 0) {
             result.add(majorResistLabel);
             result.add(majorResistances);
@@ -248,12 +277,21 @@ public class PokemonTypeChecker {
         frame.repaint();
     }
 
-    public static PokemonType getPokemonType(ImageIcon icon) {
+    public static PokemonType getPokemonType(String selected) {
         for (PokemonType p : pokemonTypes) {
-            if (p.element.icon == icon) {
+            if (p.element.toString().equals(selected)) {
                 return p;
             }
         }
-        return none; // should never be the case
+        throw new IllegalArgumentException("This should never occur!");
+    }
+
+    public static Pokemon getPokemon(String selected) {
+        for (Pokemon p : Pokemon.values()) {
+            if (p.toString().equals(selected)) {
+                return p;
+            }
+        }
+        throw new IllegalArgumentException("This should never occur!");
     }
 }
