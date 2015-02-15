@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
-public class PokemonTypeChecker {
+public class PokeEval {
 
     static PokemonType normal = new PokemonType.Builder(Element.NORMAL)
             .vulnerableTo(Element.FIGHTING).immuneTo(Element.GHOST).generate();
